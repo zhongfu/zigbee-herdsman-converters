@@ -1077,12 +1077,12 @@ const converters = {
         cluster: 'genOnOff',
         type: ['attributeReport'],
         convert: (model, msg, publish, options, meta) => {
-            if (['QBKG04LM', 'QBKG11LM', 'QBKG21LM', 'QBKG03LM', 'QBKG12LM', 'QBKG22LM'].includes(model.model) && !msg.data['61440']) {
+            if (['QBKG04LM', 'QBKG11LM', 'QBKG21LM', 'QBKG23LM', 'QBKG03LM', 'QBKG12LM', 'QBKG22LM', 'QBKG24LM'].includes(model.model) && !msg.data['61440']) {
                 return;
             }
 
             let mapping = null;
-            if (['QBKG03LM', 'QBKG12LM', 'QBKG22LM'].includes(model.model)) mapping = {4: 'left', 5: 'right', 6: 'both'};
+            if (['QBKG03LM', 'QBKG12LM', 'QBKG22LM', 'QBKG24LM'].includes(model.model)) mapping = {4: 'left', 5: 'right', 6: 'both'};
             if (['WXKG02LM'].includes(model.model)) mapping = {1: 'left', 2: 'right', 3: 'both'};
 
             // Dont' use postfixWithEndpointName here, endpoints don't match
@@ -1102,7 +1102,7 @@ const converters = {
             let actionLookup = {0: 'hold', 1: 'single', 2: 'double', 255: 'release'};
             let buttonLookup = null;
             if (model.model === 'WXKG02LM') buttonLookup = {1: 'left', 2: 'right', 3: 'both'};
-            if (model.model === 'QBKG12LM') buttonLookup = {5: 'left', 6: 'right', 7: 'both'};
+            if (['QBKG03LM', 'QBKG12LM', 'QBKG22LM', 'QBKG24LM'].includes(model.model)) buttonLookup = {5: 'left', 6: 'right', 7: 'both'};
             if (model.model === 'WXKG12LM') {
                 actionLookup = {...actionLookup, 16: 'hold', 17: 'release', 18: 'shake'};
             }
@@ -1288,13 +1288,13 @@ const converters = {
         type: ['attributeReport', 'readResponse'],
         convert: (model, msg, publish, options, meta) => {
             const payload = {};
-            if (['QBKG04LM', 'QBKG11LM', 'QBKG21LM'].includes(model.model)) {
+            if (['QBKG04LM', 'QBKG11LM', 'QBKG21LM', 'QBKG23LM'].includes(model.model)) {
                 const mappingMode = {0x12: 'control_relay', 0xFE: 'decoupled'};
                 const key = '65314';
                 if (msg.data.hasOwnProperty(key)) {
                     payload.operation_mode = mappingMode[msg.data[key]];
                 }
-            } else if (['QBKG03LM', 'QBKG12LM', 'QBKG22LM'].includes(model.model)) {
+            } else if (['QBKG03LM', 'QBKG12LM', 'QBKG22LM', 'QBKG24LM'].includes(model.model)) {
                 const mappingButton = {'65314': 'left', '65315': 'right'};
                 const mappingMode = {0x12: 'control_left_relay', 0x22: 'control_right_relay', 0xFE: 'decoupled'};
                 for (const key in mappingButton) {

@@ -679,28 +679,19 @@ const devices = [
         onEvent: xiaomi.prevent_reset,
     },
     {
-        zigbeeModel: ['lumi.switch.n3acn3'],
-        model: 'QBKG26LM',
-        vendor: 'Xiaomi',
-        description: 'Aqara D1 3 gang smart wall switch (with neutral wire)',
-        supports: 'on/off, action, power measurement',
-        fromZigbee: [fz.on_off, fz.QBKG25LM_click, fz.xiaomi_operation_mode_opple],
-        toZigbee: [tz.on_off, tz.xiaomi_switch_operation_mode, tz.xiaomi_switch_power_outage_memory, tz.xiaomi_switch_do_not_disturb],
-        meta: {multiEndpoint: true},
-        endpoint: (device) => {
-            return {'left': 1, 'center': 2, 'right': 3};
-        },
-        onEvent: xiaomi.prevent_reset,
-    },
-    {
         zigbeeModel: ['lumi.switch.b1nacn02'],
         model: 'QBKG23LM',
         vendor: 'Xiaomi',
         description: 'Aqara D1 1 gang smart wall switch (with neutral wire)',
         supports: 'on/off, power measurement',
-        fromZigbee: [fz.on_off, fz.xiaomi_power],
-        toZigbee: [tz.on_off],
-        meta: {},
+        fromZigbee: [
+            fz.xiaomi_on_off_action, fz.xiaomi_multistate_action,
+            /* check these: */
+            fz.on_off_xiaomi_ignore_endpoint_4_5_6, fz.legacy_QBKG04LM_QBKG11LM_click,
+            fz.xiaomi_power_from_basic,
+            fz.xiaomi_operation_mode_basic, fz.legacy_QBKG11LM_click, fz.ignore_multistate_report, fz.xiaomi_power,
+        ],
+        toZigbee: [tz.on_off, tz.xiaomi_switch_operation_mode],
         endpoint: (device) => {
             return {'system': 1};
         },
@@ -711,12 +702,32 @@ const devices = [
         model: 'QBKG24LM',
         vendor: 'Xiaomi',
         description: 'Aqara D1 2 gang smart wall switch (with neutral wire)',
-        supports: 'on/off, power measurement',
-        fromZigbee: [fz.on_off, fz.xiaomi_power],
-        toZigbee: [tz.on_off],
+        supports: 'on/off, power measurement, temperature',
+        fromZigbee: [
+            fz.xiaomi_on_off_action, fz.xiaomi_multistate_action,
+            /* check these: */
+            fz.on_off_xiaomi_ignore_endpoint_4_5_6, fz.legacy_QBKG03LM_QBKG12LM_click,
+            fz.xiaomi_power_from_basic, fz.xiaomi_operation_mode_basic, fz.legacy_QBKG12LM_click,
+            fz.xiaomi_power,
+        ],
         meta: {multiEndpoint: true},
+        toZigbee: [tz.on_off, tz.xiaomi_switch_operation_mode],
         endpoint: (device) => {
             return {'left': 1, 'right': 2, 'system': 1};
+        },
+        onEvent: xiaomi.prevent_reset,
+    },
+    {
+        zigbeeModel: ['lumi.switch.n3acn3'],
+        model: 'QBKG26LM',
+        vendor: 'Xiaomi',
+        description: 'Aqara D1 3 gang smart wall switch (with neutral wire)',
+        supports: 'on/off, action, power measurement',
+        fromZigbee: [fz.on_off, fz.QBKG25LM_click, fz.xiaomi_operation_mode_opple],
+        toZigbee: [tz.on_off, tz.xiaomi_switch_operation_mode, tz.xiaomi_switch_power_outage_memory, tz.xiaomi_switch_do_not_disturb],
+        meta: {multiEndpoint: true},
+        endpoint: (device) => {
+            return {'left': 1, 'center': 2, 'right': 3};
         },
         onEvent: xiaomi.prevent_reset,
     },
